@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Treino Virtual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .resultado-card {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 5px solid #28a745;
+            background-color: #e9f7ef;
+            text-align: left;
+            display: none; /* Fica invisível até clicar no botão */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>👟 Assistente de Treino Virtual</h2>
+        <p>Selecione seu objetivo atual:</p>
+
+        <select id="objetivo">
+            <option value="iniciante">Começar a correr (Iniciante)</option>
+            <option value="5k">Completar 5 km</option>
+            <option value="10k">Completar 10 km</option>
+        </select>
+
+        <button onclick="gerarTreino()">Gerar Meu Treino</button>
+
+        <div id="resultado" class="resultado-card">
+            <h3>✅ Seu Treino Pronto:</h3>
+            <p><strong>Planilha:</strong> <span id="res-planilha"></span></p>
+            <p><strong>Rota Recomendada:</strong> <span id="res-rota"></span></p>
+            <p><strong>Aviso Climático:</strong> <span id="res-clima"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function gerarTreino() {
+            // Pega os dados da tela e a hora atual do dispositivo
+            const objetivo = document.getElementById("objetivo").value;
+            const horaAtual = new Date().getHours(); 
+
+            // Faz a requisição HTTP GET para o nosso Spring Boot
+            fetch(`http://localhost:8080/api/treinador/gerar?objetivo=${objetivo}&horaAtual=${horaAtual}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Preenche a tela com a resposta que veio do Java
+                    document.getElementById("res-planilha").innerText = data.planilha;
+                    document.getElementById("res-rota").innerText = data.rota;
+                    document.getElementById("res-clima").innerText = data.clima;
+                    
+                    // Mostra o card de resultado na tela
+                    document.getElementById("resultado").style.display = "block";
+                })
+                .catch(error => {
+                    alert("Erro ao conectar. O servidor Spring Boot está rodando?");
+                    console.error("Erro na requisição:", error);
+                });
+        }
+    </script>
+</body>
+</html>
