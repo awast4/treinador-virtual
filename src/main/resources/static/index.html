@@ -77,7 +77,7 @@
             const horaAtual = new Date().getHours(); 
 
             // Faz a requisição HTTP GET para o nosso Spring Boot
-            fetch(`http://localhost:8080/api/treinador/gerar?objetivo=${objetivo}&horaAtual=${horaAtual}`)
+         fetch(`/api/treinador/gerar?objetivo=${objetivo}&horaAtual=${horaAtual}`)
                 .then(response => response.json())
                 .then(data => {
                     // Preenche a tela com a resposta que veio do Java
